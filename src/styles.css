@@ -1,0 +1,30 @@
+.memory-card {
+    transform-style: preserve-3d;
+    transition: all 0.8s ease;
+}
+
+.card-front {
+    position: absolute;
+    backface-visibility: hidden;
+    transform: rotateY(180deg);
+}
+
+.card-back {
+    backface-visibility: hidden;
+}
+
+.flip-card {
+    transform: rotateY(180deg);
+}
+
+.grid-container {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: 5rem 5rem 5rem 5rem 5rem 5rem;
+    align-content: center;
+    justify-content: center;
+}
+
+.grid-item {
+    text-align: center;
+}
