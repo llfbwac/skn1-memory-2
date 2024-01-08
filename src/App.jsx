@@ -2,14 +2,13 @@ import { useState } from 'react'
 import { Button, Card, Container, Row, Col, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames';
-// import { classNames } from 'classnames';
-// import classNames from 'classnames';
 
 export default function Board() {
 
-  let icons = ['coffee', 'yin-yang', 'wrench', 'vr-cardboard', 'table-tennis', 'teeth-open', 'sun', 'snowman', 'poo', 'hippo', 'shower', 'robot'];
+  let icons = ['coffee', 'yin-yang', 'wrench', 'vr-cardboard', 'table-tennis', 'teeth-open', 'sun', 'snowman', 'poo', 'hippo', 'shower', 'robot', 'lightbulb', 'dice'];
   let rawCards = icons.concat(icons);
   let shuffledCards = rawCards.sort((a, b) => 0.5 - Math.random());
+  // let bestScore = localStorage.getItem('memory-best-score');
 
   let shuffledCardObjects = shuffledCards.map(function (cardIcon, index) {
     return ({
@@ -23,9 +22,18 @@ export default function Board() {
   const [cards, setCards] = useState(shuffledCardObjects);
   const [currentPair, setCurrentPair] = useState([]);
   const [playsCounter, setPlaysCounter] = useState(0);
+  const [bestScore, setBestScore] = useState(localStorage.getItem('memory-best-score'));
 
   let victory = isVictory(cards);
-  console.log(victory);
+  if (victory) {
+    if (!localStorage.getItem('memory-best-score')) {
+      localStorage.setItem('memory-best-score', playsCounter);
+    } else {
+      if (playsCounter < bestScore) {
+        localStorage.setItem('memory-best-score', playsCounter);
+      }
+    }
+  }
 
   function handleMemoryCardClick(index) {
     if (victory) {
@@ -81,22 +89,19 @@ export default function Board() {
 
   const cardElements = cards.map(function (card, index) {
     return (
-      // <Col key={index} className="mt-3" md="auto">
-      <MemoryCard icon={card.icon} flipped={cards[index].flipped} selected={cards[index].selected} pairFound={cards[index].pairFound} onMemoryCardClick={cards[index].flipped ? null : () => handleMemoryCardClick(index)}></MemoryCard>
-      // {/* </Col> */ }
+      <MemoryCard key={index} icon={card.icon} flipped={cards[index].flipped} selected={cards[index].selected} pairFound={cards[index].pairFound} onMemoryCardClick={cards[index].flipped ? null : () => handleMemoryCardClick(index)}></MemoryCard>
     );
   })
+
+  const bestScoreElement = bestScore ? <h2>Record : {bestScore}</h2> : '';
 
 
   return (
     <>
       <h1>React memory!</h1>
-      <h2>Nombre de tours : {playsCounter}</h2>
+      <h2>Score : {playsCounter}</h2>
+      {bestScoreElement}
       <Container className='grid-container'>
-        {/* <Row>
-          <Col>
-          </Col>
-        </Row> */}
         {cardElements}
       </Container>
       <VictoryModal show={victory} playsCounter={playsCounter} onRestart={handleRestart} />
@@ -109,14 +114,20 @@ function MemoryCard({ icon, flipped, selected, pairFound, onMemoryCardClick }) {
   let borderColor = selected ? 'red' : '';
   let flipStatus = flipped ? 'flip-card' : '';
 
+  let cardFront = <FontAwesomeIcon icon={["fas", icon]} size="2x" />;
+
+  if (flipped) {
+    cardFront = <FontAwesomeIcon icon={["fas", icon]} size="2x" />
+  }
+
   return (
     <>
       <Card style={{ width: '5rem', height: '7rem', background: backgroundColor, borderColor: borderColor }} className={classNames('memory-card', 'grid-item', flipStatus)} onClick={onMemoryCardClick}>
         <Card.Body className='d-flex align-items-center justify-content-center memory-card'>
-          <div className='card-front'>
-            <FontAwesomeIcon icon={["fas", icon]} size="2x" />
+          <div className='card-back'>
+            {cardFront}
           </div>
-          <div className="card-back">
+          <div className="card-front">
             <FontAwesomeIcon icon={["fas", 'chess-queen']} size="2x" />
           </div>
         </Card.Body>
