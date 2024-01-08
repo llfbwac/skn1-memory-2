@@ -114,7 +114,7 @@ function MemoryCard({ icon, flipped, selected, pairFound, onMemoryCardClick }) {
   let borderColor = selected ? 'red' : '';
   let flipStatus = flipped ? 'flip-card' : '';
 
-  let cardFront = <FontAwesomeIcon icon={["fas", icon]} size="2x" />;
+  let cardFront = null;
 
   if (flipped) {
     cardFront = <FontAwesomeIcon icon={["fas", icon]} size="2x" />
@@ -124,10 +124,10 @@ function MemoryCard({ icon, flipped, selected, pairFound, onMemoryCardClick }) {
     <>
       <Card style={{ width: '5rem', height: '7rem', background: backgroundColor, borderColor: borderColor }} className={classNames('memory-card', 'grid-item', flipStatus)} onClick={onMemoryCardClick}>
         <Card.Body className='d-flex align-items-center justify-content-center memory-card'>
-          <div className='card-back'>
+          <div className='card-front'>
             {cardFront}
           </div>
-          <div className="card-front">
+          <div className="card-back">
             <FontAwesomeIcon icon={["fas", 'chess-queen']} size="2x" />
           </div>
         </Card.Body>
